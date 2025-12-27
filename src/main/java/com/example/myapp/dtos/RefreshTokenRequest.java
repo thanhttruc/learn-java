@@ -1,6 +1,5 @@
 package com.example.myapp.dtos;
 
-public record LoginResponse(
-    String accessToken,
+public record RefreshTokenRequest(
     String refreshToken
 ) {}
