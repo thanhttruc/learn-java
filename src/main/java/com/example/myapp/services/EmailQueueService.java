@@ -15,6 +15,7 @@ public class EmailQueueService {
 
     private final EmailQueueRepository repo;
 
+
     public void enqueue(
             String to,
             String subject,

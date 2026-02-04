@@ -24,16 +24,20 @@ public class JwtService {
     public String generateAccessToken(User user) {
 
         return Jwts.builder()
-            .setSubject(user.getUsername())
-            .claim("role", user.getRole())
-            .setIssuedAt(new Date())
-            .setExpiration(
-                new Date(System.currentTimeMillis() + 1000 * 60 * 60)
-            )
-            .signWith( Keys.hmacShaKeyFor(secretKey.getBytes()),SignatureAlgorithm.HS256
-)
-            .compact();
+                .setSubject(user.getUsername())
+                .claim("userId", user.getId())
+                .claim("role", user.getRole().name())
+                .setIssuedAt(new Date())
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + 1000 * 60 * 60)
+                )
+                .signWith(
+                        Keys.hmacShaKeyFor(secretKey.getBytes()),
+                        SignatureAlgorithm.HS256
+                )
+                .compact();
     }
+
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -64,4 +68,17 @@ public class JwtService {
         final String username = extractUsername(token);
         return (username.equals(user.getUsername()) && !isTokenExpired(token));
     }
+
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims ->
+                claims.get("userId", Long.class)
+        );
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims ->
+                claims.get("role", String.class)
+        );
+    }
+
 }

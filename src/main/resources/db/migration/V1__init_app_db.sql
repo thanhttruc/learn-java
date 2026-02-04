@@ -1,13 +1,10 @@
-DROP DATABASE IF EXISTS app_db;
-CREATE DATABASE app_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- DROP DATABASE IF EXISTS app_db;
+-- CREATE DATABASE app_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE app_db;
 
--- =====================
--- USERS
--- =====================
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
+    full_name VARCHAR(100),
     email VARCHAR(100) NOT NULL UNIQUE,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -138,4 +135,26 @@ CREATE TABLE recurring_transactions (
     CONSTRAINT fk_rt_user FOREIGN KEY (user_id) REFERENCES users(id),
     CONSTRAINT fk_rt_account FOREIGN KEY (account_id) REFERENCES accounts(id),
     CONSTRAINT fk_rt_category FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+CREATE TABLE email_queue (
+                             id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                             recipient VARCHAR(255) NOT NULL,
+                             subject VARCHAR(255),
+                             body TEXT,
+                             status VARCHAR(50),
+                             retry_count INT DEFAULT 0,
+                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                                 ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE refresh_token (
+                                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                token VARCHAR(255) NOT NULL UNIQUE,
+                                user_id BIGINT NOT NULL,
+                                revoked BOOLEAN DEFAULT FALSE,
+                                expired_at DATETIME NOT NULL,
+                                CONSTRAINT fk_refresh_token_user
+                                    FOREIGN KEY (user_id) REFERENCES users(id)
+                                        ON DELETE CASCADE
 );

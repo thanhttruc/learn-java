@@ -20,6 +20,7 @@ public class EmailWorker {
     private final EmailQueueRepository repo;
     private final JavaMailSender mailSender;
 
+
     @Scheduled(fixedDelay = 10000)
     public void processQueue() {
 

@@ -26,6 +26,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final EmailQueueService emailQueueService;
 
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
         authService.register(req);
