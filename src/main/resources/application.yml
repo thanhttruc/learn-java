@@ -1,9 +1,9 @@
 spring:
   rabbitmq:
-    host: localhost
+    host: 10.172.174.11
     port: 5672
-    username: guest
-    password: guest
+    username: duckie
+    password: Duckie@010203
 
   mail:
     host: smtp.gmail.com

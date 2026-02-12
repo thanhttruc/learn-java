@@ -27,7 +27,6 @@ public class AccountController {
     }
 
 
-    // Lấy danh sách tài khoản
     @GetMapping
     public List<AccountResponse> getAccounts(
             @AuthenticationPrincipal User user
@@ -35,7 +34,6 @@ public class AccountController {
         return accountService.getAccounts(user);
     }
 
-    // Lấy chi tiết tài khoản
     @GetMapping("/{id}")
     public AccountResponse getAccountDetail(
             @PathVariable Long id,
@@ -44,7 +42,6 @@ public class AccountController {
         return accountService.getAccountDetail(user, id);
     }
 
-    // Cập nhật tài khoản
     @PutMapping("/{id}")
     public AccountResponse updateAccount(
             @PathVariable Long id,
@@ -54,7 +51,6 @@ public class AccountController {
         return accountService.updateAccount(user, id, request);
     }
 
-    // Xóa tài khoản
     @DeleteMapping("/{id}")
     public void deleteAccount(
             @PathVariable Long id,

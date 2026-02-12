@@ -1,4 +1,5 @@
 package com.example.myapp.entities;
+
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -28,15 +29,16 @@ public class Category {
     @Column(nullable = false)
     private CategoryType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Category parentCategory;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
     public enum CategoryType {
-        INCOME, EXPENSE
+        INCOME,
+        EXPENSE
     }
 }
-
