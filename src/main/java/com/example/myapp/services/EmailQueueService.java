@@ -1,11 +1,9 @@
 package com.example.myapp.services;
 
-import java.time.LocalDateTime;
-
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.example.myapp.entities.EmailQueue;
-import com.example.myapp.repositories.EmailQueueRepository;
+import com.example.myapp.dtos.EmailMessageDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,24 +11,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmailQueueService {
 
-    private final EmailQueueRepository repo;
-
+    private final RabbitTemplate rabbitTemplate;
 
     public void enqueue(
             String to,
             String subject,
             String body) {
 
-        EmailQueue email = new EmailQueue();
-        email.setRecipient(to);
-        email.setSubject(subject);
-        email.setBody(body);
-        email.setStatus("PENDING");
-        email.setRetryCount(0);
-        email.setCreatedAt(LocalDateTime.now());
-        email.setUpdatedAt(LocalDateTime.now());
+        EmailMessageDto emailMessage = new EmailMessageDto(to, subject, body);
 
-        repo.save(email);
+        rabbitTemplate.convertAndSend("email.exchange", "email.send", emailMessage);
+        System.out.println("Email message enqueued to RabbitMQ for: " + to);
     }
 }
 

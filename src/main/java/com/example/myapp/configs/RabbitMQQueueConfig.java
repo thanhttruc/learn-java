@@ -55,4 +55,23 @@ public class RabbitMQQueueConfig {
                 .to(transactionExchange)
                 .with("transaction.created");
     }
+
+    // ===== Email Messaging Components =====
+    @Bean
+    public DirectExchange emailExchange() {
+        return new DirectExchange("email.exchange");
+    }
+
+    @Bean
+    public Queue emailQueue() {
+        return QueueBuilder.durable("email.queue").build();
+    }
+
+    @Bean
+    public Binding emailBinding(Queue emailQueue, DirectExchange emailExchange) {
+        return BindingBuilder
+                .bind(emailQueue)
+                .to(emailExchange)
+                .with("email.send");
+    }
 }

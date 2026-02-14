@@ -24,6 +24,10 @@ public class AccountService {
     // Create account
     public AccountResponse createAccount(User user, AccountRequest req) {
 
+        accountRepository.findByAccountNumber(req.getAccountNumber()).ifPresent(a -> {
+            throw new RuntimeException("Category already exists");
+        });
+
         Account account = Account.builder()
                 .user(user)
                 .name(req.getName())
@@ -65,6 +69,10 @@ public class AccountService {
     public AccountResponse updateAccount(User user, Long accountId, AccountRequest req) {
         Account account = accountRepository.findByIdAndUser(accountId, user)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        accountRepository.findByAccountNumber(req.getAccountNumber()).ifPresent(a -> {
+            throw new RuntimeException("Category already exists");
+        });
 
         account.setName(req.getName());
         account.setBankName(req.getBankName());

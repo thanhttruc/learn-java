@@ -1,15 +1,11 @@
 package com.example.myapp.services;
 
-import java.time.LocalDateTime;
-
-import java.util.List;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.example.myapp.entities.EmailQueue;
-import com.example.myapp.repositories.EmailQueueRepository;
+import com.example.myapp.dtos.EmailMessageDto;
 
 import lombok.*;
 
@@ -17,38 +13,28 @@ import lombok.*;
 @RequiredArgsConstructor
 public class EmailWorker {
 
-    private final EmailQueueRepository repo;
     private final JavaMailSender mailSender;
 
-
-    @Scheduled(fixedDelay = 10000)
-    public void processQueue() {
-
-        List<EmailQueue> emails =
-            repo.findTop10ByStatusOrderByCreatedAtAsc("PENDING");
-
-        for (EmailQueue email : emails) {
-            try {
-                send(email);
-                email.setStatus("SENT");
-            } catch (Exception e) {
-                email.setRetryCount(email.getRetryCount() + 1);
-                email.setStatus("FAILED");
-            }
-
-            email.setUpdatedAt(LocalDateTime.now());
-            repo.save(email);
+    @RabbitListener(queues = "email.queue")
+    public void receiveEmailMessage(EmailMessageDto emailMessage) {
+        try {
+            send(emailMessage);
+            System.out.println("Email sent successfully to: " + emailMessage.getTo());
+        } catch (Exception e) {
+            System.err.println("Failed to send email to " + emailMessage.getTo() + ": " + e.getMessage());
+            // In a real application, you might want to implement retry logic here,
+            // possibly by republishing to a dead-letter queue or logging for manual intervention.
         }
     }
 
-    private void send(EmailQueue email) {
+    private void send(EmailMessageDto email) {
 
         SimpleMailMessage message =
             new SimpleMailMessage();
 
-        message.setTo(email.getRecipient());
+        message.setTo(email.getTo());
         message.setSubject(email.getSubject());
-        message.setText(email.getBody());
+        message.setText(email.getContent());
 
         mailSender.send(message);
     }

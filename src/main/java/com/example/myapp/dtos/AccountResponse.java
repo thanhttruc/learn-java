@@ -98,39 +98,39 @@ public class AccountResponse {
     private String currency;
     private LocalDateTime createdAt;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public AccountType getType() {
-        return type;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public BigDecimal getCurrentBalance() {
-        return currentBalance;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public AccountType getType() {
+//        return type;
+//    }
+//
+//    public String getBankName() {
+//        return bankName;
+//    }
+//
+//    public String getBranchName() {
+//        return branchName;
+//    }
+//
+//    public String getAccountNumber() {
+//        return accountNumber;
+//    }
+//
+//    public BigDecimal getCurrentBalance() {
+//        return currentBalance;
+//    }
+//
+//    public String getCurrency() {
+//        return currency;
+//    }
+//
+//    public LocalDateTime getCreatedAt() {
+//        return createdAt;
+//    }
 }

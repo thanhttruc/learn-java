@@ -25,4 +25,3 @@ public class AccountCreatedEvent {
         this.currency = currency;
     }
 }
-
