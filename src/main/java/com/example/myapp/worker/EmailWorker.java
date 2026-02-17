@@ -1,11 +1,11 @@
-package com.example.myapp.services;
+package com.example.myapp.worker;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.example.myapp.dtos.EmailMessageDto;
+import com.example.myapp.dtos.EmailMessage;
 
 import lombok.*;
 
@@ -16,7 +16,7 @@ public class EmailWorker {
     private final JavaMailSender mailSender;
 
     @RabbitListener(queues = "email.queue")
-    public void receiveEmailMessage(EmailMessageDto emailMessage) {
+    public void receiveEmailMessage(EmailMessage emailMessage) {
         try {
             send(emailMessage);
             System.out.println("Email sent successfully to: " + emailMessage.getTo());
@@ -27,7 +27,7 @@ public class EmailWorker {
         }
     }
 
-    private void send(EmailMessageDto email) {
+    private void send(EmailMessage email) {
 
         SimpleMailMessage message =
             new SimpleMailMessage();

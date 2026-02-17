@@ -9,7 +9,7 @@ import com.example.myapp.entities.User;
 import com.example.myapp.security.JwtService;
 import com.example.myapp.security.RefreshTokenService;
 import com.example.myapp.services.AuthService;
-import com.example.myapp.services.EmailQueueService;
+import com.example.myapp.producer.EmailQueueService;
 
 import lombok.RequiredArgsConstructor;
 

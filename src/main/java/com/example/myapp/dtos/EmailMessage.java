@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class EmailMessageDto {
+public class EmailMessage {
 
     private String to;
     private String subject;

@@ -4,8 +4,8 @@ import com.example.myapp.dtos.AccountRequest;
 import com.example.myapp.dtos.AccountResponse;
 import com.example.myapp.entities.Account;
 import com.example.myapp.entities.User;
-import com.example.myapp.events.AccountCreatedEvent;
-import com.example.myapp.events.AccountEventPublisher;
+//import com.example.myapp.events.AccountCreatedEvent;
+//import com.example.myapp.events.AccountEventPublisher;
 import com.example.myapp.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +19,8 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private final AccountEventPublisher eventPublisher;
+//    private final AccountEventPublisher eventPublisher;
 
-    // Create account
     public AccountResponse createAccount(User user, AccountRequest req) {
 
         accountRepository.findByAccountNumber(req.getAccountNumber()).ifPresent(a -> {
@@ -42,13 +41,13 @@ public class AccountService {
 
         Account saved = accountRepository.save(account);
 
-        eventPublisher.publish(new AccountCreatedEvent(
-                saved.getId(),
-                user.getId(),
-                saved.getType(),
-                saved.getInitialBalance(),
-                saved.getCurrency()
-        ));
+//        eventPublisher.publish(new AccountCreatedEvent(
+//                saved.getId(),
+//                user.getId(),
+//                saved.getType(),
+//                saved.getInitialBalance(),
+//                saved.getCurrency()
+//        ));
 
         return toResponse(saved);
     }
