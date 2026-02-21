@@ -12,6 +12,12 @@ import org.springframework.amqp.core.Queue;
 public class RabbitMQQueueConfig {
 
     // ===== Exchange =====
+
+    @Bean
+    public DirectExchange emailExchange() {
+        return new DirectExchange("email.exchange");
+    }
+
     @Bean
     public DirectExchange accountExchange() {
         return new DirectExchange("account.exchange");
@@ -22,7 +28,18 @@ public class RabbitMQQueueConfig {
         return new DirectExchange("transaction.exchange");
     }
 
+    @Bean
+    public DirectExchange budgetExchange() {
+        return new DirectExchange("budget.exchange");
+    }
+
+
     // ===== Queues =====
+    @Bean
+    public Queue emailQueue() {
+        return QueueBuilder.durable("email.queue").build();
+    }
+
     @Bean
     public Queue accountCreatedQueue() {
         return QueueBuilder.durable("account.created.queue").build();
@@ -31,6 +48,11 @@ public class RabbitMQQueueConfig {
     @Bean
     public Queue transactionCreatedQueue() {
         return QueueBuilder.durable("transaction.created.queue").build();
+    }
+
+    @Bean
+    public Queue budgetProgressQueue() {
+        return QueueBuilder.durable("budget.progress.queue").build();
     }
 
     // ===== Bindings =====
@@ -56,15 +78,15 @@ public class RabbitMQQueueConfig {
                 .with("transaction.created");
     }
 
-    // ===== Email Messaging Components =====
     @Bean
-    public DirectExchange emailExchange() {
-        return new DirectExchange("email.exchange");
-    }
-
-    @Bean
-    public Queue emailQueue() {
-        return QueueBuilder.durable("email.queue").build();
+    public Binding budgetCreatedBinding(
+            Queue budgetProgressQueue,
+            DirectExchange budgetExchange
+    ) {
+        return BindingBuilder
+                .bind(budgetProgressQueue)
+                .to(budgetExchange)
+                .with("budget.progress");
     }
 
     @Bean

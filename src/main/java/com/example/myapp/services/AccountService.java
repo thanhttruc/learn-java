@@ -34,8 +34,7 @@ public class AccountService {
                 .bankName(req.getBankName())
                 .branchName(req.getBranchName())
                 .accountNumber(req.getAccountNumber())
-                .initialBalance(req.getInitialBalance())
-                .currentBalance(req.getInitialBalance())
+                .currentBalance(req.getCurrentBalance())
                 .currency(req.getCurrency())
                 .build();
 
@@ -77,6 +76,7 @@ public class AccountService {
         account.setBankName(req.getBankName());
         account.setBranchName(req.getBranchName());
         account.setAccountNumber(req.getAccountNumber());
+        account.setCurrentBalance(req.getCurrentBalance());
         account.setCurrency(req.getCurrency());
 
         Account updated = accountRepository.save(account);

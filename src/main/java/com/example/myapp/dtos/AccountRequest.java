@@ -16,7 +16,7 @@ public class AccountRequest {
     private String branchName;
     private String accountNumber;
 
-    private BigDecimal initialBalance;
+    private BigDecimal currentBalance;
     private String currency;
 //
 //    public void setName(String name) {

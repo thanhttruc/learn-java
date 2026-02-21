@@ -4,8 +4,11 @@ import com.example.myapp.entities.UserTransaction;
 import com.example.myapp.entities.UserTransaction.TransactionStatus;
 import com.example.myapp.entities.UserTransaction.TransactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,14 +25,31 @@ public interface UserTransactionRepository extends JpaRepository<UserTransaction
 
     List<UserTransaction> findByUserIdAndTransactionTimeBetween(
             Long userId,
-            LocalDateTime start,
-            LocalDateTime end
+            LocalDate start,
+            LocalDate end
     );
 
     List<UserTransaction> findByUserIdAndTypeAndTransactionTimeBetween(
             Long userId,
             TransactionType type,
+            LocalDate start,
+            LocalDate end
+    );
+
+    @Query("""
+    SELECT COALESCE(SUM(t.amount), 0)
+    FROM UserTransaction t
+    WHERE t.user.id = :userId
+      AND t.category.id = :categoryId
+      AND t.type = 'EXPENSE'
+      AND t.status = 'COMPLETED'
+      AND t.createdAt BETWEEN :start AND :end
+""")
+    BigDecimal sumExpenseForBudget(
+            Long userId,
+            Long categoryId,
             LocalDateTime start,
             LocalDateTime end
     );
 }
+

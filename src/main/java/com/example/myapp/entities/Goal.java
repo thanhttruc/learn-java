@@ -24,14 +24,15 @@ public class Goal {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+
     @Column(nullable = false)
     private String name;
 
     @Column(name = "target_amount", nullable = false)
     private BigDecimal targetAmount;
-
-    @Column(name = "current_amount")
-    private BigDecimal currentAmount;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;

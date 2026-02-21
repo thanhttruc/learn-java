@@ -1,0 +1,4 @@
+USE app_db;
+
+ALTER TABLE accounts
+ADD COLUMN version BIGINT NOT NULL DEFAULT 0;

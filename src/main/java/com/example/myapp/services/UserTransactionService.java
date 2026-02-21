@@ -83,7 +83,7 @@ public class UserTransactionService {
         return new UserTransactionResponse(saved);
     }
 
-    // ================= READ ALL =================
+
 
     public List<UserTransactionResponse> getAll(User user) {
         return transactionRepository.findByUserId(user.getId())

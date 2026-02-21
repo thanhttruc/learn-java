@@ -5,6 +5,7 @@ import com.example.myapp.dtos.AccountResponse;
 import com.example.myapp.entities.User;
 import com.example.myapp.services.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,44 +19,45 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public AccountResponse createAccount(
+    public ResponseEntity<AccountResponse> createAccount(
             @RequestBody AccountRequest request,
             @AuthenticationPrincipal User user
     ) {
         System.out.println("User = " + user);
-        return accountService.createAccount(user, request);
+        return ResponseEntity.ok(accountService.createAccount(user, request));
     }
 
 
     @GetMapping
-    public List<AccountResponse> getAccounts(
+    public ResponseEntity<List<AccountResponse>> getAccounts(
             @AuthenticationPrincipal User user
     ) {
-        return accountService.getAccounts(user);
+        return ResponseEntity.ok(accountService.getAccounts(user));
     }
 
     @GetMapping("/{id}")
-    public AccountResponse getAccountDetail(
+    public ResponseEntity<AccountResponse> getAccountDetail(
             @PathVariable Long id,
             @AuthenticationPrincipal User user
     ) {
-        return accountService.getAccountDetail(user, id);
+        return ResponseEntity.ok(accountService.getAccountDetail(user, id));
     }
 
     @PutMapping("/{id}")
-    public AccountResponse updateAccount(
+    public ResponseEntity<AccountResponse> updateAccount(
             @PathVariable Long id,
             @RequestBody AccountRequest request,
             @AuthenticationPrincipal User user
     ) {
-        return accountService.updateAccount(user, id, request);
+        return ResponseEntity.ok(accountService.updateAccount(user, id, request));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAccount(
+    public ResponseEntity<Void>  deleteAccount(
             @PathVariable Long id,
             @AuthenticationPrincipal User user
     ) {
         accountService.deleteAccount(user, id);
+        return ResponseEntity.noContent().build();
     }
 }
