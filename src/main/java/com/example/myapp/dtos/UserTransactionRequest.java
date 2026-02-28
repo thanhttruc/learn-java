@@ -6,9 +6,14 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserTransactionRequest {
 
     @NotNull(message = "Account id is required")

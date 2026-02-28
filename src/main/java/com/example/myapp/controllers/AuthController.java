@@ -14,7 +14,9 @@ import com.example.myapp.producer.EmailQueueService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -52,15 +54,25 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-public ResponseEntity<?> logout(
+    public ResponseEntity<?> logout(
         @RequestBody RefreshTokenRequest req) {
 
-    RefreshToken token =
+        RefreshToken token =
         refreshTokenService.verify(req.refreshToken());
 
-    refreshTokenService.revoke(token);
+        refreshTokenService.revoke(token);
 
-    return ResponseEntity.ok("Logout success");
-}
+        return ResponseEntity.ok("Logout success");
+    }
+
+    @PostMapping("/me/avatar")
+    public ResponseEntity<?> uploadAvatar(
+            @AuthenticationPrincipal User user,
+            @RequestParam("file") MultipartFile file
+    ) throws Exception {
+
+        String url = authService.uploadAvatar(user, file);
+        return ResponseEntity.ok(url);
+    }
 
 }

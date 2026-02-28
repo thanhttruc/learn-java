@@ -4,6 +4,10 @@ spring:
     username: root
     password: trucdang02
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   jpa:
     hibernate:
@@ -15,6 +19,12 @@ spring:
     port: 5672
     username: guest
     password: guest
+
+  minio:
+    url: http://minio:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    bucket: myapp-avatars
 
 server:
   port: 8080

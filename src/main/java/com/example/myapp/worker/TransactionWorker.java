@@ -16,6 +16,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,9 +36,16 @@ public class TransactionWorker {
     @Transactional
     public void consume(TransactionMessage message) {
 
-        UserTransaction transaction = transactionRepository
-                .findById(message.getTransactionId())
-                .orElseThrow();
+        Optional<UserTransaction> optional = transactionRepository
+                .findById(message.getTransactionId());
+
+        if (optional.isEmpty()) {
+            log.error("Transaction not found: {}", message.getTransactionId());
+            return;
+        }
+
+        UserTransaction transaction = optional.get();
+
 
         if (transaction.getStatus() == UserTransaction.TransactionStatus.COMPLETED) {
             return;
@@ -69,9 +78,18 @@ public class TransactionWorker {
 
                 case TRANSFER -> {
 
-                    Account targetAccount = accountRepository
-                            .findById(transaction.getTargetAccount().getId())
-                            .orElseThrow();
+                    Optional<Account> targetOpt = accountRepository
+                            .findById(transaction.getTargetAccount().getId());
+
+                    if (targetOpt.isEmpty()) {
+                        log.error("Target account not found");
+                        transaction.setStatus(UserTransaction.TransactionStatus.FAILED);
+                        transactionRepository.save(transaction);
+                        return;
+                    }
+
+                    Account targetAccount = targetOpt.get();
+
 
                     if (account.getCurrentBalance().compareTo(transaction.getAmount()) < 0) {
                         throw new RuntimeException("Insufficient funds");

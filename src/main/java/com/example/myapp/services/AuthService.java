@@ -10,17 +10,11 @@ import com.example.myapp.dtos.RegisterRequest;
 import com.example.myapp.entities.RefreshToken;
 import com.example.myapp.entities.Role;
 import com.example.myapp.entities.User;
-
-import lombok.RequiredArgsConstructor;
-
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -30,13 +24,15 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final MinioService minioService;
 
     @Autowired
-    public AuthService(UserRepository userRepo, PasswordEncoder encoder, JwtService jwtService, RefreshTokenService refreshTokenService) {
+    public AuthService(UserRepository userRepo, PasswordEncoder encoder, JwtService jwtService, RefreshTokenService refreshTokenService,MinioService minioService) {
         this.userRepo = userRepo;
         this.encoder = encoder;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.minioService = minioService;
     }
 
     
@@ -73,5 +69,16 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenService.create(user);
 
         return new LoginResponse(accessToken, refreshToken.getToken());
+    }
+
+    @Transactional
+    public String uploadAvatar(User user, MultipartFile file) throws Exception {
+
+        String url = minioService.uploadAvatar(file);
+
+        user.setAvatarUrl(url);
+        userRepo.save(user);
+
+        return url;
     }
 }
